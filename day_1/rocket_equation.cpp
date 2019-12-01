@@ -5,7 +5,7 @@
 using namespace std;
 
 int calculate_fuel(int mass);
-
+int module_fuel(int mass);
 
 int main() {
 	ifstream input;
@@ -24,7 +24,7 @@ int main() {
 
 		cout << "Mass is: " << value << endl;
 
-		int fuel = calculate_fuel(value);
+		int fuel = module_fuel(value);
 
 		cout << "Required fuel is: " << fuel << endl;
 		total_fuel += fuel;
@@ -34,6 +34,41 @@ int main() {
 	return 0;
 }
 
+
+/*
+ * Find module fuel taking into account fuel mass
+ *
+ */
+int module_fuel(int mass) {
+	int module_fuel, intermediate_fuel;
+
+	int fuel_fuel = 0;
+
+	int fuel;
+
+	//find module fuel
+	module_fuel = calculate_fuel(mass);
+
+	//find initial intermediate fuel needed
+	intermediate_fuel = calculate_fuel(module_fuel);
+
+	//recursively find fuel needed for fuel
+	while(true){
+		if(intermediate_fuel > 0) {
+			fuel_fuel += intermediate_fuel;
+			intermediate_fuel = calculate_fuel(intermediate_fuel);
+		} else {
+			break;
+		}
+	}
+
+	return module_fuel + fuel_fuel;
+}
+
+
+/*
+ * Find fuel needed for a certain amount of mass
+ */
 int calculate_fuel(int mass) {
 	int fuel;
 
