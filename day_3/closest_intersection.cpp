@@ -32,10 +32,8 @@ int main() {
 	vector<tuple<int, int, int>> first_positions = plot_ordinates(first_scales);
 	vector<tuple<int, int, int>> second_positions = plot_ordinates(second_scales);
 
-	vector<int> neighbours;
-	vector<int> meet_sums;
-	vector<tuple<int, int, int>> first_intersections;
-	vector<tuple<int, int, int>> second_intersections;
+	int neighbour = 0;
+	int meet_sum = 0;
 	for(auto f : first_positions){
 		for(auto s : second_positions){
 			int x1, x2, y1, y2;
@@ -44,27 +42,32 @@ int main() {
 			y1 = get<1>(f);
 			y2 = get<1>(s);
 			if(x1 == x2 && y1 == y2){
-					neighbours.push_back(abs(x1 + y1));
-					first_intersections.push_back(f);
-					second_intersections.push_back(s);
+					int dist = abs(x1 + y1);
+					int steps = get<2>(f) + get<2>(s);
+					switch(neighbour){
+						case 0:
+							neighbour = dist;
+							break;
+						default:
+							if(dist < neighbour)
+								neighbour = dist;
+					}
+
+					switch(meet_sum){
+						case 0:
+							meet_sum = steps;
+							break;
+						default:
+							if(steps < meet_sum)
+								meet_sum = steps;
+					}
 			}
 		}
 	}
 
-	for(int i = 0; i < first_intersections.size(); i++){
-		int steps1 = get<2>(first_intersections[i]);
-		int steps2 = get<2>(second_intersections[i]);
-		meet_sums.push_back(steps1 + steps2);
-	}
+	cout << "Least steps is: " << meet_sum << " steps away" << endl;
 
-
-	sort(meet_sums.begin(), meet_sums.end());
-	cout << "Least steps is: " << meet_sums[0] << " steps away" << endl;
-
-
-
-	sort(neighbours.begin(), neighbours.end());
-	cout << "Closest Neighbour is: " << neighbours[0] << " away" << endl;
+	cout << "Closest Neighbour is: " << neighbour << " away" << endl;
 
 	return 0;
 }
